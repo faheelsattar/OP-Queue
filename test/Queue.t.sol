@@ -8,7 +8,7 @@ import { Queue } from "../src/Queue.sol";
 
 /// @dev See the "Writing Tests" section in the Foundry Book if this is your first time with Forge.
 /// https://book.getfoundry.sh/forge/writing-tests
-contract ContractTest is PRBTest {
+contract QueueTest is PRBTest {
     Queue q1;
 
     function setUp() public {
@@ -16,7 +16,7 @@ contract ContractTest is PRBTest {
     }
 
     /// @dev Run Forge with `-vvvv` to see console logs.
-    function testExample() public {
+    function testEnqueue() public {
         q1.enqueue(5);
         q1.enqueue(4);
         q1.enqueue(3);
