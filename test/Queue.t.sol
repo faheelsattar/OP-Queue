@@ -17,12 +17,17 @@ contract ContractTest is PRBTest {
 
     /// @dev Run Forge with `-vvvv` to see console logs.
     function testExample() public {
-        q1.enqueue();
-        q1.enqueue();
-        q1.enqueue();
-        q1.enqueue();
-        q1.enqueue();
-        
-        assertTrue(true);
+        q1.enqueue(5);
+        q1.enqueue(4);
+        q1.enqueue(3);
+        q1.enqueue(2);
+        q1.enqueue(1);
+
+        assertEq(q1.getStore(1), 5);
+        assertEq(q1.getStore(2), 4);
+        assertEq(q1.getStore(3), 3);
+        assertEq(q1.getStore(4), 2);
+        assertEq(q1.getStore(5), 1);
+        assertEq(q1.getStore(6), 0);
     }
 }
