@@ -23,11 +23,18 @@ contract QueueTest is PRBTest {
         q1.enqueue(2);
         q1.enqueue(1);
 
-        assertEq(q1.getStore(1), 5);
-        assertEq(q1.getStore(2), 4);
-        assertEq(q1.getStore(3), 3);
-        assertEq(q1.getStore(4), 2);
-        assertEq(q1.getStore(5), 1);
-        assertEq(q1.getStore(6), 0);
+        assertEq(q1.store(1), 5);
+        assertEq(q1.store(2), 4);
+        assertEq(q1.store(3), 3);
+        assertEq(q1.store(4), 2);
+        assertEq(q1.store(5), 1);
+        assertEq(q1.store(6), 0);
+    }
+
+    function testLastFirst() public {
+        q1.enqueue(5);
+        q1.enqueue(4);
+
+        assertEq(bytes32(q1.lastFirst()), 0x0000000000000000000000000000000200000000000000000000000000000000);
     }
 }

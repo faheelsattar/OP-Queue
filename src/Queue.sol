@@ -33,8 +33,4 @@ contract Queue {
 
         return true;
     }
-
-    function getStore(uint256 _key) external view returns (uint256) {
-        return store[_key];
-    }
 }
