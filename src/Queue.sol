@@ -2,7 +2,6 @@
 pragma solidity >=0.8.4;
 import { console } from "forge-std/console.sol";
 
-
 contract Queue {
     mapping(uint256 => uint256) public store;
     uint256 public lastFirst;
@@ -44,6 +43,9 @@ contract Queue {
             let lastFirstSlot := lastFirst.slot
 
             let storedData := sload(lastFirstSlot)
+            if eq(storedData, 0x0) {
+                revert(0, 0)
+            }
             let addOneInFirst := add(storedData, FIRST_ADD_ONE)
 
             let left := shr(0x80, addOneInFirst)
