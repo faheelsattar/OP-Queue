@@ -10,15 +10,20 @@ contract Queue {
     uint256 private constant LAST_ADD_ONE = 0x0000000000000000000000000000000100000000000000000000000000000000;
     uint256 private constant FIRST_ADD_ONE = 0x0000000000000000000000000000000000000000000000000000000000000001;
 
-    function enqueue(uint256 _data) external returns (bool) {
+    function enqueue(uint256 _data) external {
         uint256 max256 = type(uint256).max;
-        
+        uint256 max128 = type(uint128).max;
+
         assembly {
             let lastFirstSlot := lastFirst.slot
 
             let storedData := sload(lastFirstSlot)
             let addOneInLast := add(storedData, LAST_ADD_ONE)
-            let last := and(LAST_MASK, addOneInLast)
+            let last := shr(0x80, addOneInLast)
+
+            if gt(last, max128) {
+                revert(0, 0)
+            }
 
             let removedBits := and(storedData, xor(max256, LAST_MASK))
 
@@ -27,14 +32,12 @@ contract Queue {
 
             let ptr := mload(0x40)
 
-            mstore(ptr, shr(0x80, addOneInLast))
+            mstore(ptr, last)
             mstore(add(ptr, 0x20), store.slot)
 
             let calcNewSlot := keccak256(ptr, 0x40)
             sstore(calcNewSlot, _data)
         }
-
-        return true;
     }
 
     function dequeue() external returns (uint256 data) {
@@ -49,13 +52,13 @@ contract Queue {
             }
             let addOneInFirst := add(storedData, FIRST_ADD_ONE)
 
-            let left := shr(0x80, addOneInFirst)
-            let right := and(FIRST_MASK, addOneInFirst)
+            let last := shr(0x80, addOneInFirst)
+            let first := and(FIRST_MASK, addOneInFirst)
 
-            if eq(left, right) {
+            if eq(last, first) {
                 sstore(lastFirstSlot, 0x0)
             }
-            if gt(left, right) {
+            if gt(last, first) {
                 let removedBits := and(storedData, xor(max, FIRST_MASK))
                 let updateFirstBits := or(removedBits, addOneInFirst)
                 sstore(lastFirstSlot, updateFirstBits)
@@ -63,7 +66,7 @@ contract Queue {
 
             let ptr := mload(0x40)
 
-            mstore(ptr, right)
+            mstore(ptr, first)
             mstore(add(ptr, 0x20), store.slot)
 
             let calcNewSlot := keccak256(ptr, 0x40)
