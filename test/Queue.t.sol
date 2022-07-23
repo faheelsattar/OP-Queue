@@ -53,8 +53,5 @@ contract QueueTest is PRBTest {
         console.logBytes32(bytes32(q1.lastFirst()));
         console.log(q1.dequeue());
         console.logBytes32(bytes32(q1.lastFirst()));
-        console.log(q1.dequeue());
-        console.log(q1.dequeue());
-        console.logBytes32(bytes32(q1.lastFirst()));
     }
 }

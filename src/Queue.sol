@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4;
+
 contract Queue {
     mapping(uint256 => uint256) public store;
     uint256 public lastFirst;
@@ -10,14 +11,16 @@ contract Queue {
     uint256 private constant FIRST_ADD_ONE = 0x0000000000000000000000000000000000000000000000000000000000000001;
 
     function enqueue(uint256 _data) external returns (bool) {
-        uint256 max = type(uint256).max;
-
+        uint256 max256 = type(uint256).max;
+        
         assembly {
             let lastFirstSlot := lastFirst.slot
 
             let storedData := sload(lastFirstSlot)
             let addOneInLast := add(storedData, LAST_ADD_ONE)
-            let removedBits := and(storedData, xor(max, LAST_MASK))
+            let last := and(LAST_MASK, addOneInLast)
+
+            let removedBits := and(storedData, xor(max256, LAST_MASK))
 
             let updateLastBits := or(removedBits, addOneInLast)
             sstore(lastFirstSlot, updateLastBits)
