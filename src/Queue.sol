@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4;
-import { console } from "forge-std/console.sol";
-
 contract Queue {
     mapping(uint256 => uint256) public store;
     uint256 public lastFirst;
