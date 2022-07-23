@@ -41,7 +41,7 @@ contract Queue {
     }
 
     function dequeue() external returns (uint256 data) {
-        uint256 max = type(uint256).max;
+        uint256 max256 = type(uint256).max;
 
         assembly {
             let lastFirstSlot := lastFirst.slot
@@ -59,7 +59,7 @@ contract Queue {
                 sstore(lastFirstSlot, 0x0)
             }
             if gt(last, first) {
-                let removedBits := and(storedData, xor(max, FIRST_MASK))
+                let removedBits := and(storedData, xor(max256, FIRST_MASK))
                 let updateFirstBits := or(removedBits, addOneInFirst)
                 sstore(lastFirstSlot, updateFirstBits)
             }
@@ -73,7 +73,5 @@ contract Queue {
             data := sload(calcNewSlot)
             sstore(calcNewSlot, 0)
         }
-
-        return data;
     }
 }

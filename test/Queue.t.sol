@@ -45,13 +45,15 @@ contract QueueTest is PRBTest {
         q1.enqueue(2);
         q1.enqueue(1);
 
-        console.logBytes32(bytes32(q1.lastFirst()));
-        console.log(q1.dequeue());
-        console.log(q1.dequeue());
-        console.log(q1.dequeue());
-        console.log(q1.dequeue());
-        console.logBytes32(bytes32(q1.lastFirst()));
-        console.log(q1.dequeue());
-        console.logBytes32(bytes32(q1.lastFirst()));
+        assertEq(q1.dequeue(), 5);
+        assertEq(q1.dequeue(), 4);
+        assertEq(q1.dequeue(), 3);
+        assertEq(q1.dequeue(), 2);
+        assertEq(q1.dequeue(), 1); //at this point the queue is empty
+        assertEq(q1.lastFirst(), 0);
+    }
+
+    function testFuckAll() public {
+        
     }
 }
