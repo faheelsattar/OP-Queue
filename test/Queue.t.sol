@@ -37,4 +37,24 @@ contract QueueTest is PRBTest {
 
         assertEq(bytes32(q1.lastFirst()), 0x0000000000000000000000000000000200000000000000000000000000000000);
     }
+
+    function testDequeue() public {
+        q1.enqueue(5);
+        q1.enqueue(4);
+        q1.enqueue(3);
+        q1.enqueue(2);
+        q1.enqueue(1);
+
+        console.logBytes32(bytes32(q1.lastFirst()));
+        console.log(q1.dequeue());
+        console.log(q1.dequeue());
+        console.log(q1.dequeue());
+        console.log(q1.dequeue());
+        console.logBytes32(bytes32(q1.lastFirst()));
+        console.log(q1.dequeue());
+        console.logBytes32(bytes32(q1.lastFirst()));
+        console.log(q1.dequeue());
+        console.log(q1.dequeue());
+        console.logBytes32(bytes32(q1.lastFirst()));
+    }
 }
