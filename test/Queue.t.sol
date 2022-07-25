@@ -33,7 +33,7 @@ contract QueueTest is PRBTest {
     }
 
     function testCannotEnqueueMoreThenMax128() public {
-       q1.enqueue(5);
+        q1.enqueue(5);
 
         uint256 max128 = type(uint128).max;
         uint256 last = max128 << 0x80;
@@ -56,6 +56,18 @@ contract QueueTest is PRBTest {
         assertEq(q1.dequeue(), 3);
         assertEq(q1.dequeue(), 2);
         assertEq(q1.dequeue(), 1); //at this point the queue is empty
+    }
+
+    function testDequeueWhenLastFirstEqualMax256() public {
+        q1.enqueue(5);
+
+        uint256 max256 = type(uint256).max -1;
+
+        vm.store(address(q1), bytes32(uint256(1)), bytes32(max256));
+
+        assertEq(q1.dequeue(), 0); //at this point the queue is empty
+
+        assertEq(bytes32(q1.lastFirst()), 0x0);
     }
 
     function testCannotDequeueWhenStoreIsEmpty1() public {
