@@ -10,6 +10,7 @@ import { Queue } from "../src/Queue.sol";
 /// https://book.getfoundry.sh/forge/writing-tests
 contract QueueTest is PRBTest {
     Queue q1;
+    uint256 testNumber;
 
     function setUp() public {
         q1 = new Queue();
@@ -31,6 +32,18 @@ contract QueueTest is PRBTest {
         assertEq(q1.store(6), 0);
     }
 
+    function testCannotEnqueueMoreThenMax128() public {
+       q1.enqueue(5);
+
+        uint256 max128 = type(uint128).max;
+        uint256 last = max128 << 0x80;
+
+        vm.store(address(q1), bytes32(uint256(1)), bytes32(last));
+
+        vm.expectRevert();
+        q1.enqueue(5);
+    }
+
     function testDequeue() public {
         q1.enqueue(5);
         q1.enqueue(4);
@@ -43,7 +56,28 @@ contract QueueTest is PRBTest {
         assertEq(q1.dequeue(), 3);
         assertEq(q1.dequeue(), 2);
         assertEq(q1.dequeue(), 1); //at this point the queue is empty
-        assertEq(q1.lastFirst(), 0);
+    }
+
+    function testCannotDequeueWhenStoreIsEmpty1() public {
+        vm.expectRevert();
+        q1.dequeue();
+    }
+
+    function testCannotDequeueWhenStoreIsEmpty2() public {
+        q1.enqueue(5);
+        q1.enqueue(4);
+        q1.enqueue(3);
+        q1.enqueue(2);
+        q1.enqueue(1);
+
+        q1.dequeue();
+        q1.dequeue();
+        q1.dequeue();
+        q1.dequeue();
+        q1.dequeue(); //at this point the queue is empty
+
+        vm.expectRevert();
+        q1.dequeue();
     }
 
     function testLastFirst() public {

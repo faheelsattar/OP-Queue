@@ -19,6 +19,11 @@ contract Queue {
 
             let storedData := sload(lastFirstSlot)
             let addOneInLast := add(storedData, LAST_ADD_ONE)
+
+            //overflow check
+            if eq(addOneInLast, 0) {
+                revert(0, 0)
+            }
             let last := shr(0x80, addOneInLast)
 
             if gt(last, max128) {
