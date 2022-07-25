@@ -31,13 +31,6 @@ contract QueueTest is PRBTest {
         assertEq(q1.store(6), 0);
     }
 
-    function testLastFirst() public {
-        q1.enqueue(5);
-        q1.enqueue(4);
-
-        assertEq(bytes32(q1.lastFirst()), 0x0000000000000000000000000000000200000000000000000000000000000000);
-    }
-
     function testDequeue() public {
         q1.enqueue(5);
         q1.enqueue(4);
@@ -53,7 +46,27 @@ contract QueueTest is PRBTest {
         assertEq(q1.lastFirst(), 0);
     }
 
-    function testFuckAll() public {
-        
+    function testLastFirst() public {
+        q1.enqueue(5);
+        q1.enqueue(4);
+
+        assertEq(bytes32(q1.lastFirst()), 0x0000000000000000000000000000000200000000000000000000000000000000);
+    }
+
+    function testLastFirstWithMultipleOps() public {
+        assertEq(bytes32(q1.lastFirst()), 0x0);
+
+        q1.enqueue(20);
+        q1.enqueue(12);
+
+        assertEq(bytes32(q1.lastFirst()), 0x0000000000000000000000000000000200000000000000000000000000000000);
+
+        q1.dequeue();
+
+        assertEq(bytes32(q1.lastFirst()), 0x0000000000000000000000000000000200000000000000000000000000000001);
+
+        q1.dequeue();
+
+        assertEq(bytes32(q1.lastFirst()), 0x0);
     }
 }
