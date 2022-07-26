@@ -77,33 +77,61 @@ contract Queue {
         uint256 max256 = type(uint256).max;
 
         assembly {
+            //loading lastFirst slot number
             let lastFirstSlot := lastFirst.slot
 
             let storedData := sload(lastFirstSlot)
+
+            // revert if nothing to dequeue
             if eq(storedData, 0x0) {
                 revert(0, 0)
             }
+
+            //adding one in the first 128 bits eveytime data gets dequeued
             let addOneInFirst := add(storedData, FIRST_ADD_ONE)
 
+            //extracting last bits
             let last := shr(0x80, addOneInFirst)
+
+            //extracting first bits
             let first := and(FIRST_MASK, addOneInFirst)
 
+            // fallback lastFirst to default if queue will be 
+            // empty after this call
             if eq(last, first) {
                 sstore(lastFirstSlot, 0x0)
             }
+
+            // if more items are present in the queue after 
+            // this call  
             if gt(last, first) {
+                // remove the bits for the part under updation "and"
+                // restore the other part as it is
                 let removedBits := and(storedData, xor(max256, FIRST_MASK))
+
+                // update the required bits
                 let updateFirstBits := or(removedBits, addOneInFirst)
+
+                //store updated data at required slot
                 sstore(lastFirstSlot, updateFirstBits)
             }
 
+            // load free memory ptr
             let ptr := mload(0x40)
 
+            // store the key in memory
             mstore(ptr, first)
+
+            //store the slot in memory
             mstore(add(ptr, 0x20), store.slot)
 
+            // calculate mapping slot => (keccak256(key, slot))
             let calcNewSlot := keccak256(ptr, 0x40)
+
+            // return data that is dequeued
             data := sload(calcNewSlot)
+
+            // fallback to default after dequeue at that key 
             sstore(calcNewSlot, 0)
         }
     }
