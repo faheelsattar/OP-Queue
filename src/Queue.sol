@@ -73,6 +73,8 @@ contract Queue {
         }
     }
 
+    /// @notice function to get data from the queue
+    /// @return data The data that gets dequeued
     function dequeue() external returns (uint256 data) {
         uint256 max256 = type(uint256).max;
 
@@ -96,14 +98,14 @@ contract Queue {
             //extracting first bits
             let first := and(FIRST_MASK, addOneInFirst)
 
-            // fallback lastFirst to default if queue will be 
+            // fallback lastFirst to default if queue will be
             // empty after this call
             if eq(last, first) {
                 sstore(lastFirstSlot, 0x0)
             }
 
-            // if more items are present in the queue after 
-            // this call  
+            // if more items are present in the queue after
+            // this call
             if gt(last, first) {
                 // remove the bits for the part under updation "and"
                 // restore the other part as it is
@@ -131,7 +133,7 @@ contract Queue {
             // return data that is dequeued
             data := sload(calcNewSlot)
 
-            // fallback to default after dequeue at that key 
+            // fallback to default after dequeue at that key
             sstore(calcNewSlot, 0)
         }
     }
