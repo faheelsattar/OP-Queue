@@ -60,7 +60,7 @@ contract QueueTest is PRBTest {
     function testDequeueWhenLastFirstEqualMax256() public {
         q1.enqueue(5);
 
-        uint256 max256 = type(uint256).max -1;
+        uint256 max256 = type(uint256).max - 1;
 
         vm.store(address(q1), bytes32(uint256(1)), bytes32(max256));
 
