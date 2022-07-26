@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4;
 
-import { console } from "forge-std/console.sol";
 import { PRBTest } from "@prb/test/PRBTest.sol";
 
 import { Queue } from "../src/Queue.sol";
@@ -61,7 +60,7 @@ contract QueueTest is PRBTest {
     function testDequeueWhenLastFirstEqualMax256() public {
         q1.enqueue(5);
 
-        uint256 max256 = type(uint256).max -1;
+        uint256 max256 = type(uint256).max - 1;
 
         vm.store(address(q1), bytes32(uint256(1)), bytes32(max256));
 
