@@ -23,7 +23,6 @@ contract Queue {
     /// @param _data The data that gets inserted
     function enqueue(uint256 _data) external {
         uint256 max256 = type(uint256).max;
-        uint256 max128 = type(uint128).max;
 
         assembly {
             //loading lastFirst slot number
@@ -43,7 +42,7 @@ contract Queue {
 
             // last never gt then max128 referenced before
             // assembly block
-            if gt(last, max128) {
+            if gt(last, FIRST_MASK) {
                 revert(0, 0)
             }
 
